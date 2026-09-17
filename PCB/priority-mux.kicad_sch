@@ -1604,7 +1604,7 @@
 		)
 		(uuid "65fb6292-c3c4-44e7-80c0-603749a3a62c")
 	)
-	(text "Protections & Power Selector"
+	(text "Power Selector"
 		(exclude_from_sim no)
 		(at 219.456 175.006 0)
 		(effects

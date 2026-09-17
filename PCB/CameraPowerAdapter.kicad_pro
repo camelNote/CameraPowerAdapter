@@ -417,7 +417,7 @@
       },
       {
         "filename": "priority-mux.kicad_sch",
-        "name": "Protections & PWR Mux (page 2)",
+        "name": "PWR Selector",
         "uuid": "074173bc-1142-47de-8490-4d9f0d22487f"
       }
     ],
@@ -431,7 +431,7 @@
     ],
     [
       "074173bc-1142-47de-8490-4d9f0d22487f",
-      "Protections & PWR Mux (page 2)"
+      "PWR Selector"
     ]
   ],
   "text_variables": {},

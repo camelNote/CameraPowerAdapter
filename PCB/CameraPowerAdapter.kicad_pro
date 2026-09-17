@@ -417,11 +417,11 @@
       },
       {
         "filename": "priority-mux.kicad_sch",
-        "name": "Protections & Mux",
+        "name": "Protections & PWR Mux (page 2)",
         "uuid": "074173bc-1142-47de-8490-4d9f0d22487f"
       }
     ],
-    "used_designators": "U1-2,OutPos1,H1-4,#PWR1-2,In2Neg1,In1+1,In1Pos1,In1Neg1,In2Pos1,OutNeg1",
+    "used_designators": "R1-8,Q1-2,#PWR3-9,C1-7",
     "variants": []
   },
   "sheets": [
@@ -431,7 +431,7 @@
     ],
     [
       "074173bc-1142-47de-8490-4d9f0d22487f",
-      "Protections & Mux"
+      "Protections & PWR Mux (page 2)"
     ]
   ],
   "text_variables": {},

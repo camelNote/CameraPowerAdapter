@@ -1,6 +1,12 @@
+# KiCad generated files
 fp-info-cache
-*-backups
+*-backups/
+.history/
+**/.history/
+
+# KiCad backup files
+*.bak
+
+# Other project-specific files
 README.txt
 AGENTS.md
-/.history
-PCB/.history

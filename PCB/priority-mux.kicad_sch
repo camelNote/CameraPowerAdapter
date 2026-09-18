@@ -4175,7 +4175,7 @@
 			)
 		)
 		(pin "7"
-			(uuid "2e12fa6a-1251-4ee4-bdbc-67252779f85b")
+			(uuid "2e12fa6a-1251-4ee4-bdbc-67252779f85c")
 		)
 		(pin "4"
 			(uuid "40adb662-6f7a-43b6-bea1-1eba2dc66331")
@@ -4184,16 +4184,16 @@
 			(uuid "e77852ad-5658-4bb1-adc6-c64fbe391aea")
 		)
 		(pin "1"
-			(uuid "305f5be8-0d98-49b8-8f94-935eef56fed8")
+			(uuid "305f5be8-0d98-49b8-8f94-935eef56fed9")
 		)
 		(pin "8"
-			(uuid "0eeff404-3e48-43ac-9d02-aaf6810adfc4")
+			(uuid "0eeff404-3e48-43ac-9d02-aaf6810adfc5")
 		)
 		(pin "6"
 			(uuid "973be2ac-f813-47cc-b2f1-68e40d9df0c8")
 		)
 		(pin "2"
-			(uuid "a7ae49e1-f8bb-426f-a5fe-9e39e579ac89")
+			(uuid "a7ae49e1-f8bb-426f-a5fe-9e39e579ac8a")
 		)
 		(pin "5"
 			(uuid "b27aee29-79bd-4e1e-bab6-cf8bd3e8b21f")
@@ -5331,28 +5331,28 @@
 			)
 		)
 		(pin "7"
-			(uuid "2e12fa6a-1251-4ee4-bdbc-67252779f85c")
+			(uuid "2e12fa6a-1251-4ee4-bdbc-67252779f85d")
 		)
 		(pin "4"
-			(uuid "40adb662-6f7a-43b6-bea1-1eba2dc66332")
+			(uuid "40adb662-6f7a-43b6-bea1-1eba2dc66333")
 		)
 		(pin "3"
-			(uuid "e77852ad-5658-4bb1-adc6-c64fbe391aeb")
+			(uuid "e77852ad-5658-4bb1-adc6-c64fbe391aec")
 		)
 		(pin "1"
-			(uuid "305f5be8-0d98-49b8-8f94-935eef56fed9")
+			(uuid "305f5be8-0d98-49b8-8f94-935eef56feda")
 		)
 		(pin "8"
-			(uuid "0eeff404-3e48-43ac-9d02-aaf6810adfc5")
+			(uuid "0eeff404-3e48-43ac-9d02-aaf6810adfc6")
 		)
 		(pin "6"
-			(uuid "973be2ac-f813-47cc-b2f1-68e40d9df0c9")
+			(uuid "973be2ac-f813-47cc-b2f1-68e40d9df0ca")
 		)
 		(pin "2"
-			(uuid "a7ae49e1-f8bb-426f-a5fe-9e39e579ac8a")
+			(uuid "a7ae49e1-f8bb-426f-a5fe-9e39e579ac8b")
 		)
 		(pin "5"
-			(uuid "b27aee29-79bd-4e1e-bab6-cf8bd3e8b220")
+			(uuid "b27aee29-79bd-4e1e-bab6-cf8bd3e8b221")
 		)
 		(instances
 			(project "CameraPowerAdapter"

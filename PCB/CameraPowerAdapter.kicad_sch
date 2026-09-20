@@ -1922,6 +1922,16 @@
 	)
 	(wire
 		(pts
+			(xy 207.01 81.28) (xy 212.09 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "17f1ee34-7e59-4ee2-853c-0978fb365d64")
+	)
+	(wire
+		(pts
 			(xy 134.62 93.98) (xy 143.51 93.98)
 		)
 		(stroke
@@ -2102,7 +2112,7 @@
 	)
 	(wire
 		(pts
-			(xy 265.43 73.66) (xy 265.43 77.47)
+			(xy 93.98 54.61) (xy 93.98 58.42)
 		)
 		(stroke
 			(width 0)
@@ -2302,7 +2312,7 @@
 	)
 	(wire
 		(pts
-			(xy 265.43 63.5) (xy 265.43 66.04)
+			(xy 93.98 44.45) (xy 93.98 46.99)
 		)
 		(stroke
 			(width 0)
@@ -3190,6 +3200,16 @@
 		)
 		(uuid "1b706df4-cedd-4de3-8aa4-2ca83c24285a")
 	)
+	(label "VOUT_REG"
+		(at 212.09 81.28 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "22ee35c2-ae5d-4c82-8fb2-011c4d77502a")
+	)
 	(label "TG1"
 		(at 171.45 73.66 180)
 		(effects
@@ -3261,7 +3281,7 @@
 		(uuid "78ded39e-67a4-46eb-ab5a-319157f691de")
 	)
 	(label "SYNC/SPRD"
-		(at 265.43 63.5 180)
+		(at 93.98 44.45 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3373,7 +3393,7 @@
 		(uuid "b5e6c72e-d873-4b15-9e27-f4cf2495e612")
 	)
 	(label "INTVcc"
-		(at 265.43 77.47 180)
+		(at 93.98 58.42 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3600,7 +3620,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 265.43 69.85 0)
+		(at 93.98 50.8 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -3611,7 +3631,7 @@
 		(fields_autoplaced yes)
 		(uuid "168e38f2-493d-4e02-899d-b7ff8674899e")
 		(property "Reference" "C15"
-			(at 269.24 68.5799 0)
+			(at 97.79 49.5299 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -3622,7 +3642,7 @@
 			)
 		)
 		(property "Value" "4.7u"
-			(at 269.24 71.1199 0)
+			(at 97.79 52.0699 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -3633,7 +3653,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 266.3952 73.66 0)
+			(at 94.9452 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3644,7 +3664,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 265.43 69.85 0)
+			(at 93.98 50.8 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3655,7 +3675,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 265.43 69.85 0)
+			(at 93.98 50.8 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

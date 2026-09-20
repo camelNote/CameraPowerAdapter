@@ -2,6 +2,8 @@
 
 Component list extracted from `BuckBoostTopology.md`. Reference designators match `PCB/CameraPowerAdapter.kicad_sch`. Values, packages and passives per that guide; "Status" reflects the sheet as of 2026-09-19.
 
+> **Update 2026-09-19:** all listed passives, `D5`/`D6` and `U3` are now placed. The deferred actives (`Q7`–`Q11`, `D1`–`D4`, `J1`, `TH1`) are still unplaced — see **Not complete** in `BuckBoostTopology.md`. The Status column below was written before that placement pass, so treat the deferred rows as authoritative and the passive rows as now `placed`.
+
 **Status legend:** `placed` = already in the schematic · `to add` = prescribed by the guide, not yet placed · `optional` = fit only if needed · `DNP` = do not populate.
 
 ---

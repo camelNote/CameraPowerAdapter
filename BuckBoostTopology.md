@@ -9,6 +9,30 @@
 
 ---
 
+## Not complete
+
+**Status 2026-09-19:** the power train, controller support, output stage, feedback/voltage-select resistors, compensation, sense filters, optional Schottkys (`D5`/`D6`) and `U3` (TL431) are placed and wired; values match this guide. ERC: 0 errors.
+
+The analog support blocks are **not yet implemented**:
+
+| Ref | Part | Block |
+|---|---|---|
+| Q7 | BC807 PNP | over-temp latch trigger |
+| Q8 | BC807 PNP | over-temp latch (SCR pair) |
+| Q9 | BC817 NPN | over-temp latch (SCR pair) |
+| Q10 | BC817 NPN | latch shutdown → `EN/UVLO` |
+| Q11 | BC817 NPN | output-fault LED driver |
+| D1 | green LED | power indicator |
+| D2 | red LED | output-fault indicator |
+| D3 | BZX84C5V1 | `VZ` rail zener |
+| D4 | red LED | over-temp indicator |
+| J1 | 2-pin shunt | 12 V / 24 V select |
+| TH1 | 10 k NTC | over-temp sensor |
+
+The passives those blocks need **are** already placed (`R18`–`R27`, `R29`–`R31`), carrying stub net labels (`LED_*`, `VZ`, `KC`, `TH`, `SCR_A`, `SCR_B`, `Q7_*`, `Q8_E`, `Q10_B`, `Q11_B`) ready for the devices above to dock. `U3`'s feed/divider parts (`R20`–`R22`, `R26`) are in too — only `D3`, `TH1` and `Q7`–`Q10` are missing to complete the latch.
+
+---
+
 ## 1. Topology at a glance
 
 ```
@@ -124,10 +148,10 @@ VOUT ──[R20 2.2k 1W]──┬── VZ
                       │
                      GND
 
-VZ ──[TH1 10k NTC]──┬── TH ─── U3 REF   (U3 = TL431. SOT-23-3 pinout is NOT vendor-universal —
-                     │                    check the actual part before wiring: TI's TL431 DBZ is
-                   [R21 1.33k]             1=REF, 2=CATHODE, 3=ANODE; other vendors put CATHODE
-                     │                    on pin 1. Wiring REF and CATHODE swapped kills the latch.)
+VZ ──[TH1 10k NTC]──┬── TH ─── U3 REF   (U3 = TL431 SOT-23-3; TI DBZ is
+                     │                    1=CATHODE, 2=REF, 3=ANODE — the KiCad
+                   [R21 1.33k]            `TL431DBZ` symbol matches. The TL432 is
+                     │                    pinned differently — don't substitute it.)
                     GND
 
 VOUT ──[R22 4.7k]── KC ─── U3 CATHODE
@@ -231,7 +255,7 @@ Resistor sizing (continuous 36 V): `R19`/`R29` at 6.8 kΩ drop ~34 V → **0.17 
 
 1. **PGOOD polarity was inverted.** The LT8390 pulls PGOOD **low when the output is GOOD** (high-Z on fault). The §4.5 inverter lit the red LED in normal operation and kept it dark on fault. Fixed: direct pull-up (`R30`) + NPN (`Q11`), no inverter — §4.5 rewritten. `Q12`, `R28`, `R32` are retired; refs freed.
 2. **The latch could never light the LED.** Old `D4` needed ~1.4 V at the anode, but a latched `SCR_B` clamps at ~0.85 V (Q9's V_BE) — the diode never conducted. Fixed: red B (`R29`/`D4`) now hangs off `SCR_A`, which goes *low* when latched; a load cannot false-trigger the latch, so no steering diode is needed. Bonus: two reds now distinguish output fault from over-temp.
-3. **TL431 SOT-23-3 pinout is vendor-dependent.** TI's TL431 DBZ is 1=REF, 2=CATHODE, 3=ANODE — the reverse of the "normal pinning" some other vendors use. Wiring it per the wrong convention silently kills the latch. Warning added in §4.4.
+3. **TL431 vs TL432 SOT-23 pinout (corrected).** TI's **TL431** DBZ is 1=CATHODE, 2=REF, 3=ANODE — which the KiCad `TL431DBZ` symbol now placed matches. The **TL432** DBZ is pinned differently, so don't substitute it. (The first audit had TL431/TL432 swapped; corrected against TI SLVS543 Table 5-1.)
 4. **Missing bootstrap values** — `C10`/`C18` now specified (100 nF X7R; datasheet 0.1–0.47 µF).
 5. **Missing datasheet design rules, now checked/documented:** second 1 µF INTVCC cap; `C9` ≥ 5–10× `C25` (6.7×, OK); RSENSE 20–30% margin (24%, OK); input-cap RMS current (§5).
 6. **New risk documented: INTVCC self-heating** — ~1.6 W in the IC at 36 V/200 kHz gate drive (§5). Verify TJ before committing to the enclosure.
@@ -244,12 +268,12 @@ Resistor sizing (continuous 36 V): `R19`/`R29` at 6.8 kΩ drop ~34 V → **0.17 
 
 *Verified against the sheet's netlist, 2026-09-19.*
 
-- **`C15` is wired INTVCC↔`SYNC/SPRD`, not INTVCC↔GND.** Netlist shows `C15` spanning pins 8 and 22. Consequences: **INTVCC has no bypass at all** and spread spectrum is not enabled (SYNC/SPRD is AC-coupled, not tied). Fix: move `C15` to INTVCC→GND and wire `SYNC/SPRD` straight to INTVCC.
-- **`Q3` gate is wired to `SW1`.** `Q3` is the boost high-side: gate → `TG2`, source → `SW2`, drain → `VOUT_REG`. (`Q3`/`Q4`/`Q5`/`Q6` currently have only gates connected — all source/drain pads float except `R5`/`L1` in the SW1/SW2/LSN path.)
-- **Input caps `C11–C14` are labelled `100n`** — they must be **10 µF, 50 V** (X7R/X7S, 1210).
-- **`R5` has no value set** — it must be **2 mΩ**. Likewise `C9`, `C10`, `C16`, `C17` have no values (100 n / 100 n / 470 n / 100 n per §3).
-- **Still unconnected on `U1`:** `BG2` (28), `BST2` (27), `TG2` (25), `ISP` (14), `ISN` (15), `FB` (19), `RT` (21), `VC` (20), `PGOOD` (17), `VOUT` (24); `LOADTG` (23) is a proper no-connect. TEST (10) and the pad (29) are correctly grounded.
-- Everything else in this guide (`R11`+, `C18`+, `Q7`+, `D1`+, `U3`, `J1`, `TH1`) is not yet placed — re-check refs against the sheet as they go in.
+**Fixed:** `C15` rewired to INTVCC↔GND and `SYNC/SPRD` tied to INTVCC; `Q3`/`Q4`/`Q5`/`Q6` fully wired; `R5` = 2 mΩ, `C9`/`C10` = 100 n, `C11–C14` = 10 µF, `C16` = 470 n, `C17` = 100 n, `L1` = 10 µH; `U1` pins 14/15 (`ISP`/`ISN`), 20 (`VC`), 24 (`VOUT`) connected and 23 (`LOADTG`) no-connect; output stage, feedback divider, compensation, sense filters and `U3` placed (**0 ERC errors**).
+
+**Still open:**
+- The analog support blocks listed under **Not complete** above.
+- **No footprints assigned** — every part still reads "(No footprint)". Assign the packages noted in §5/§7 (e.g. 1210 for `C11–C14`, 1206+ for `R19`/`R22`/`R29`, 1206 for `R18`, 1 W for `R20`).
+- ~48 ERC **warnings** remain, all of the form `Unspecified ↔ …` from the EasyEDA symbols (`U1`, `Q3–Q6`) having every pin typed "unspecified". Cosmetic; clears if the symbol pins are retyped.
 
 ---
 

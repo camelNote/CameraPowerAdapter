@@ -1,0 +1,663 @@
+%-----------------------------------------------------------------------------
+%  Camera Power Adapter - Custom Datasheet & Design Calculations
+%  Document: DesignDocs/CameraPowerAdapter_DesignDocument.tex
+%
+%  Compile:  pdflatex CameraPowerAdapter_DesignDocument.tex  (run twice)
+%         or latexmk -pdf CameraPowerAdapter_DesignDocument.tex
+%
+%  Template notes:
+%   - \todo{...} marks content that still needs to be filled in / verified.
+%   - Numeric examples carried over from BuckBoostTopology.md and
+%     ComponentSelection.md are marked "provisional" until re-verified
+%     against the finalized schematic.
+%-----------------------------------------------------------------------------
+\documentclass[11pt,a4paper]{article}
+
+%--------------------------------- Packages ---------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=22mm,headheight=15pt]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,
+            linkcolor=blue!60!black,
+            urlcolor=blue!60!black,
+            citecolor=blue!60!black]{hyperref}
+
+\sisetup{per-mode=symbol}
+\setlength{\emergencystretch}{2em}   % avoid overfull lines from long \texttt words
+
+%------------------------------ Custom macros -------------------------------
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\prov}{\textcolor{orange!80!black}{\textbf{(provisional)}}}
+\newcommand{\note}{\par\medskip\noindent\textbf{Note ---}\ }
+\newcommand{\comp}[1]{\texttt{#1}}                 % reference designator
+\newcommand{\figplaceholder}[1]{%
+  \fbox{\parbox[c][45mm][c]{0.85\linewidth}{\centering\color{gray}#1}}}
+
+%------------------------------ Header / footer -----------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Camera Power Adapter}
+\fancyhead[R]{Custom Datasheet \& Design Calculations}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%=============================================================================
+\begin{document}
+
+%------------------------------- Title page ---------------------------------
+\begin{titlepage}
+  \hypersetup{pageanchor=false}
+  \centering
+  \vspace*{2cm}
+
+  {\Large Vintage Film Camera Equipment\par}
+  \vspace{0.5cm}
+  {\Huge\bfseries Dual-Input Priority-Switched\\[0.3cm] Buck-Boost Power Adapter\par}
+  \vspace{1.0cm}
+  {\LARGE Custom Datasheet \& Design Calculations\par}
+  \vspace{2.0cm}
+
+  \begin{tabularx}{0.98\textwidth}{@{}lX@{}}
+    \toprule
+    \textbf{Document ID}     & CPA-DD-001 \\[2pt]
+    \textbf{Revision}        & 0.1 --- Draft / Template \\[2pt]
+    \textbf{Date}            & \today \\[2pt]
+    \textbf{Author}          & \todo{name} \\[2pt]
+    \textbf{Status}          & Work in progress --- sections marked \todo{} are incomplete \\[2pt]
+    \textbf{Related spec}    & \texttt{Specifications/SpecSheet.pdf} \\[2pt]
+    \textbf{Supporting docs} & \texttt{BuckBoostTopology.md}, \texttt{ComponentSelection.md}, \texttt{SchematicBOM.md} \\
+    \bottomrule
+  \end{tabularx}
+
+  \vfill
+  {\small This document defines the board as a standalone power module (custom datasheet) and
+   records the calculations behind every selected value (design calculations).}
+\end{titlepage}
+\hypersetup{pageanchor=true}
+
+\tableofcontents
+\newpage
+
+%=============================================================================
+\section{Introduction}
+%=============================================================================
+
+\subsection{Purpose}
+This document serves two functions:
+\begin{enumerate}[nosep]
+  \item A \textbf{custom datasheet} for the assembled adapter --- what the board
+        does, its limits, and how to connect it.
+  \item A \textbf{design calculation record} --- every value on the schematic is
+        derived from an equation traceable to a manufacturer datasheet.
+\end{enumerate}
+
+\subsection{Scope}
+The adapter accepts two independent \SIrange{11}{36}{\V} DC inputs with fixed
+priority (Input~2 preferred), protects against reverse polarity and overcurrent,
+and delivers a jumper-selected \SI{12}{\V} or \SI{24}{\V} output rated
+\SIrange{6}{8}{\A} (burst duty cycle; see \autoref{sec:datasheet-operating}).
+\newline
+\todo{Confirm scope wording against the final schematic.}
+
+\subsection{Related documents}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}lX@{}}
+    \toprule
+    \textbf{Document} & \textbf{Contents} \\
+    \midrule
+    \texttt{Specifications/SpecSheet.pdf}   & Customer requirements / acceptance criteria \\
+    \texttt{BuckBoostTopology.md}           & LT8390 stage build guide and audit log \\
+    \texttt{ComponentSelection.md}          & Value-by-value selection rationale \\
+    \texttt{SchematicBOM.md}                & Current bill of materials and placement status \\
+    \texttt{Datasheets/}                    & Manufacturer datasheets (local copies) \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Reference documents.}
+  \label{tab:related-docs}
+\end{table}
+
+\subsection{Acronyms}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}lX@{}}
+    \toprule
+    \textbf{Term} & \textbf{Meaning} \\
+    \midrule
+    UVLO    & Under-voltage lockout \\
+    CC      & Constant-current (limit) \\
+    HS / LS & High-side / low-side MOSFET switch \\
+    PGOOD   & Power-good output of the LT8390 (active low) \\
+    NTC     & Negative temperature coefficient thermistor \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Acronyms and definitions.}
+\end{table}
+
+%=============================================================================
+\section{System Overview}
+%=============================================================================
+
+\subsection{Block diagram}
+\begin{figure}[H]
+  \centering
+  \figplaceholder{\textbf{Figure placeholder}\\[2mm]
+    Input 1 $\rightarrow$ [fuse, reverse-pol.] $\;$\\
+    Input 2 $\rightarrow$ [fuse, reverse-pol.] $\;$
+    $\bigg\}$ Priority mux (LTC4417) $\rightarrow$ LT8390 buck-boost
+    $\rightarrow$ 12\,V/24\,V output\\
+    \small Export a block diagram from KiCad or draw with TikZ and \texttt{\textbackslash includegraphics} here.}
+  \caption{System block diagram. \todo{replace placeholder.}}
+  \label{fig:blockdiagram}
+\end{figure}
+
+\subsection{Operating modes}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}lX@{}}
+    \toprule
+    \textbf{Mode} & \textbf{Behaviour} \\
+    \midrule
+    Input priority   & Input~2 powers the board whenever it is valid; automatic fallback to Input~1. \\
+    Buck region      & $V_{IN} > V_{OUT}$ --- buck leg switches. \\
+    Boost region     & $V_{IN} < V_{OUT}$ --- boost leg switches. \\
+    Overlap band     & $V_{IN} \approx V_{OUT}$ --- both legs switch (worst thermal corner). \\
+    Output select    & Jumper fitted = \SI{12}{\V}; jumper removed = \SI{24}{\V}. \\
+    Over-temp fault  & Latch pulls EN/UVLO low until input power is cycled. \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Operating modes.}
+\end{table}
+
+%=============================================================================
+\section{Custom Datasheet}
+\label{sec:datasheet}
+%=============================================================================
+
+\subsection{Description}
+Dual-input, priority-selected, non-isolated synchronous buck-boost DC/DC adapter
+for vintage film camera equipment. Intended for low-duty-cycle loads (short
+bursts) inside a small enclosure --- the enclosure floor acts as the heat sink
+through a bottom-side thermal pad.
+
+\subsection{Absolute maximum ratings}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}lXl@{}}
+    \toprule
+    \textbf{Parameter} & \textbf{Conditions / note} & \textbf{Max} \\
+    \midrule
+    Input voltage, either input   & Continuous; reverse-polarity block extends to $-42$\,V      & \SI{36}{\V} \\
+    Output current                & Burst rating                                                & \SI{8}{\A} \\
+    Output current                & Continuous duty (thermal-limited)                           & \todo{\SI{2}{\A}?} \\
+    Operating ambient temperature & \todo{state enclosure assumption}                           & \todo{} \\
+    Storage temperature           &                                                             & \todo{} \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Absolute maximum ratings. Stresses beyond these may damage the board.}
+\end{table}
+
+\subsection{Recommended operating conditions}
+\label{sec:datasheet-operating}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}lXl@{}}
+    \toprule
+    \textbf{Parameter} & \textbf{Conditions / note} & \textbf{Value} \\
+    \midrule
+    Input 1 voltage & Valid operating window (UVLO $\approx$ \SI{11}{\V}) & \SIrange{11}{36}{\V} \\
+    Input 2 voltage & Valid operating window (UVLO $\approx$ \SI{11}{\V}) & \SIrange{11}{36}{\V} \\
+    Output voltage  & Jumper selection                                            & \SI{12}{\V} or \SI{24}{\V} \\
+    Output current  & Real duty cycle (per spec)                                  & \SIrange{2}{4}{\A} typical \\
+    Output current  & Short-burst rating                                          & \SIrange{6}{8}{\A} \\
+    Ambient         & Inside camera enclosure                                      & \todo{} \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Recommended operating conditions.}
+\end{table}
+
+\subsection{Electrical characteristics}
+\todo{fill min/typ/max columns once the first board is measured; values below are
+design targets, not tested limits.}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}lXl@{}}
+    \toprule
+    \textbf{Parameter} & \textbf{Conditions / note} & \textbf{Target} \\
+    \midrule
+    \multicolumn{3}{@{}l}{\textbf{Inputs}}\\
+    \addlinespace[1pt]
+    Input priority            & Fixed, not voltage-based                          & Input~2 $>$ Input~1 \\
+    UVLO per channel          & Set by priority controller; below mux floor       & \SI{11}{\V} $\pm$ \todo{} \\
+    Reverse polarity          & Both inputs independently                         & \SI{-42}{\V} capable \\
+    Fuse per input line       & Sized from worst-case input current               & \todo{rating} \\
+    Input current (worst case)& $P_{OUT}/(\eta \cdot V_{IN,min})$                  & \todo{value in A} \\
+    \addlinespace[3pt]
+    \multicolumn{3}{@{}l}{\textbf{Output}}\\
+    \addlinespace[1pt]
+    Output voltage accuracy   & LT8390 FB accuracy                                & $\pm$1.5\,\% \\
+    Output current limit      & $R_{11} = \SI{12}{\m\ohm}$ \prov                    & \SI{8.33}{\A} \\
+    Output ripple             & Measured at rated burst load                      & \todo{\si{mV_{pp}}} \\
+    \addlinespace[3pt]
+    \multicolumn{3}{@{}l}{\textbf{Protection \& indicators}}\\
+    \addlinespace[1pt]
+    Over-temperature trip     & NTC/TL431 latch \prov                              & $\approx$\SI{85}{\celsius} $\pm$ \SI{8}{\celsius} \\
+    Fault recovery            & Latch-off; requires input power cycle             & --- \\
+    Indicators                & Green = output OK, red = fault, red = over-temp   & see \autoref{tab:leds} \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Electrical characteristics (design targets).}
+\end{table}
+
+\subsection{Connector pinout}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}cll@{}}
+    \toprule
+    \textbf{Designator} & \textbf{Signal} & \textbf{Note} \\
+    \midrule
+    IN1 & Input 1 positive & M3 solder-on threaded standoff \\
+    IN1 & Input 1 return   & M3 solder-on threaded standoff \\
+    IN2 & Input 2 positive & M3 solder-on threaded standoff \\
+    IN2 & Input 2 return   & M3 solder-on threaded standoff \\
+    OUT & Output positive (V+) & M3 solder-on threaded standoff \\
+    OUT & Output return (GND)  & M3 solder-on threaded standoff \\
+    \bottomrule
+  \end{tabular}
+  \caption{I/O connections. \todo{confirm silkscreen labels once the layout is done.}}
+\end{table}
+
+\subsection{Mechanical \& environmental}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}lX@{}}
+    \toprule
+    \textbf{Parameter} & \textbf{Value / requirement} \\
+    \midrule
+    PCB outline            & \SI{45}{\mm} $\times$ \SI{75}{\mm} max \\
+    Mounting holes         & 4 $\times$ \SI{3}{\mm} dia., \SI{70}{\mm} $\times$ \SI{40}{\mm} pattern \\
+    Bottom thermal pad     & \SI{45}{\mm} $\times$ \SI{40}{\mm}, contact with enclosure floor \\
+    Assembled height       & $<\SI{13.5}{\mm}$ target; \SI{18}{\mm} fallback ceiling \\
+    Indicators             & Bottom side, output end \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Mechanical requirements.}
+\end{table}
+
+\subsection{Indicator logic}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Green (power)} & \textbf{Red (fault)} & \textbf{Red (over-temp)} \\
+    \midrule
+    ON  & OFF  & OFF \\
+    OFF & ON   & OFF \\
+    OFF & OFF  & ON  \\
+    \bottomrule
+  \end{tabular}
+  \caption{Indicator truth table. \todo{add state column once LED wiring is final.}}
+  \label{tab:leds}
+\end{table}
+
+\subsection{Typical application}
+\begin{figure}[H]
+  \centering
+  \figplaceholder{Place the annotated top-level schematic or KiCad plot here.}
+  \caption{Typical application circuit. \todo{replace placeholder.}}
+\end{figure}
+
+%=============================================================================
+\section{Design Calculations}
+\label{sec:calcs}
+%=============================================================================
+\note All equations are from the \textbf{LT8390 datasheet, Rev.~F}
+(Applications Information, pp.~17--25) unless stated otherwise.
+Values tagged \prov{} are carried over from \texttt{BuckBoostTopology.md} and
+must be re-verified once the schematic is frozen.
+
+\subsection{Input stage --- priority mux and protection}
+\begin{itemize}[nosep]
+  \item Priority controller: LTC4417 (or equivalent) --- fixed pin-assigned
+        priority, Input~2 wired to the highest-priority pin.
+  \item Per-channel UVLO: program the controller's undervoltage threshold to
+        \SI{11}{\V}. \todo{insert resistor calculation from the LTC4417
+        datasheet: $V_{UV}$ threshold and hysteresis formulas, show $R_{top}$, $R_{bot}$.}
+  \item Fuse sizing (each input line, ahead of the mux):
+        \begin{equation}
+          I_{FUSE} \ge \frac{P_{OUT}}{\eta \cdot V_{IN,min}} \, k_{margin}
+        \end{equation}
+        with the worst-case input current evaluated at $V_{IN,min} = \SI{11}{\V}$
+        and the burst power ($24\,\text{V} \times 8\,\text{A} = \SI{192}{\W}$).
+        Margin factor $k_{margin} = \todo{1.5--2, to be confirmed}$.
+        \todo{finalize after the efficiency estimate (\autoref{sec:efficiency})}.
+\end{itemize}
+
+\subsection{Buck-boost power stage}
+
+\subsubsection{Switching frequency}
+$R_{12} = \SI{226}{\kilo\ohm}$ (1\,\%) selects $f_{SW} = \SI{200}{\kHz}$
+(datasheet Table~1). Spread spectrum ON ($\pm$15\,\% modulation) for lower EMI.
+Rationale: thermal/size compromise; see \autoref{app:decisions}.
+
+\subsubsection{Inductor ripple current}
+\begin{align}
+  \Delta I_{L(BUCK)}  &= \frac{V_{OUT}\,(V_{IN(MAX)} - V_{OUT})}{f_{SW}\,L\,V_{IN(MAX)}} \\[2pt]
+  \Delta I_{L(BOOST)} &= \frac{V_{IN(MIN)}\,(V_{OUT} - V_{IN(MIN)})}{f_{SW}\,L\,V_{OUT}}
+\end{align}
+Worked worst case (\SI{11}{\V} in, \SI{24}{\V} out, $L = \SI{10}{\uH}$,
+$f_{SW} = \SI{200}{\kHz}$):
+\begin{equation}
+  \Delta I_{L(BOOST)} = \frac{\SI{11}{\V}\,(\SI{24}{\V}-\SI{11}{\V})}
+                             {\SI{200}{\kHz}\cdot\SI{10}{\uH}\cdot\SI{24}{\V}}
+                       \approx \SI{2.98}{\A}
+\end{equation}
+
+\subsubsection{Inductor selection}
+\begin{align}
+  L_{BUCK}  &> \frac{V_{OUT}\,(V_{IN(MAX)} - V_{OUT})}{f_{SW}\,I_{OUT}\,\Delta I_L\% \, V_{IN(MAX)}} \\[2pt]
+  L_{BOOST} &> \frac{V_{IN(MIN)}^2\,(V_{OUT} - V_{IN(MIN)})}{f_{SW}\,I_{OUT}\,\Delta I_L\% \, V_{OUT}^2} \\[2pt]
+  \text{slope-comp.\ stability:}\quad & L > \frac{10\,V_{OUT}\,R_{SENSE}}{f_{SW}} \approx \SI{2.4}{\uH}
+\end{align}
+Chosen: $L_1 = \SI{10}{\uH}$, $\ge$\SI{18}{\A} saturation, ferrite, low DCR.
+Height-budget tradeoff: the \SI{11}{\V}$\rightarrow$\SI{24}{\V}, \SI{8}{\A} corner
+peaks at $\approx$\SI{19}{\A} --- accepted, see risk log (\autoref{app:open}).
+
+\subsubsection{Inductor current sense and peak limit}
+\begin{align}
+  R_{SENSE(BUCK)}  &= \frac{2 \cdot \SI{50}{\mV}}{2\,I_{OUT} + \Delta I_{L(BUCK)}} \\[2pt]
+  R_{SENSE(BOOST)} &= \frac{2 \cdot \SI{50}{\mV} \cdot V_{IN(MIN)}}
+                           {2\,I_{OUT}\,V_{OUT} + \Delta I_{L(BOOST)}\,V_{IN(MIN)}}
+\end{align}
+Worst corner (\SI{11}{\V} in, \SI{24}{\V} out, \SI{8}{\A}):
+$R_{SENSE(BOOST)} \approx \SI{2.64}{\m\ohm}$.
+Chosen $R_5 = \SI{2}{\m\ohm}$ $\Rightarrow$ \textbf{24\,\% margin}
+(datasheet requires final value 20--30\,\% below calculated).
+Peak limit: $I_{PEAK} = \SI{50}{\mV}/R_5 = \SI{25}{\A}$.
+
+\subsubsection{Output CC limit and monitor}
+With CTRL tied to VREF ($\ge \SI{1.35}{\V}$), the ISP/ISN threshold is the full
+\SI{100}{\mV} scale:
+\begin{equation}
+  I_{LIM} = \frac{\SI{100}{\mV}}{R_{11}}
+          = \frac{\SI{100}{\mV}}{\SI{12}{\m\ohm}} = \SI{8.33}{\A}
+\end{equation}
+Monitor output: $V_{ISMON} = 10\,V_{(ISP-ISN)} + \SI{0.25}{\V}$.
+\todo{transcription re-checked against the LT8390 datasheet p.~22.}
+
+\subsubsection{Capacitors}
+\begin{itemize}[nosep]
+  \item \textbf{Input:} RMS ripple current in the buck region
+        $I_{IN,RMS} \approx I_{OUT}\sqrt{D(1-D)}$, $D = V_{OUT}/V_{IN}$;
+        worst case $D = 0.5$ gives $I_{OUT}/2 \approx \SI{4}{\A}$ at the 8\,A burst
+        rating --- shared by \comp{C11}--\comp{C14} (4 $\times$ \SI{10}{\uF},
+        \SI{50}{\V} X7R/X7S, 1210). Plus \comp{C8} = \SI{1}{\uF} at the VIN pin.
+  \item \textbf{Output:} \comp{C19}--\comp{C22} (4 $\times$ \SI{10}{\uF},
+        \SI{50}{\V}) + \comp{C23} (\SI{180}{\uF} polymer); \comp{C24} =
+        \SI{1}{\uF} at the VOUT pin.
+  \item \textbf{Bootstrap:} \comp{C10}, \comp{C18} = \SI{100}{\nF} X7R
+        ($\ge$100$\times$ top-FET gate charge; datasheet range
+        \SIrange{0.1}{0.47}{\uF}).
+  \item \textbf{INTVCC:} \comp{C15} = \SI{4.7}{\uF} plus a second \SI{1}{\uF}
+        right at the pin (datasheet layout recommendation).
+\end{itemize}
+
+\subsubsection{MOSFET selection}
+\comp{Q3}--\comp{Q6} = NCEP40T11G (logic-level; gate drive is the \SI{5}{\V}
+INTVCC rail). $R_{DS(ON)} \approx \SI{3.3}{\m\ohm}$ typ.\ at
+$V_{GS} = \SI{4.5}{\V}$. 40\,V BVDSS on a 36\,V rail leaves $\approx$11\,\%
+ringing headroom --- bench-verify, snubber if needed.
+
+\subsection{Feedback divider and output voltage select}
+\begin{equation}
+  V_{OUT} = \SI{1.00}{\V} \times \frac{R_{top} + R_{bot}}{R_{bot}},
+  \qquad R_{bot} = R_{17} = \SI{10.0}{\kilo\ohm}
+\end{equation}
+\begin{align}
+  \SI{12}{\V}:&\quad R_{top} = R_{15} = \SI{110}{\kilo\ohm} \\
+  \SI{24}{\V}:&\quad R_{top} = R_{15} + R_{16} = \SI{230}{\kilo\ohm}
+\end{align}
+\comp{J1} shunts \comp{R16}: \textbf{fitted = 12\,V, removed = 24\,V}; a missing
+jumper defaults to \SI{12}{\V} (fails low, no runaway).
+
+\subsection{Enable / UVLO}
+\begin{align}
+  V_{IN(turn\text{-}on)}  &= \SI{1.233}{\V}\cdot\frac{R_8+R_9}{R_9} + \SI{2.5}{\uA}\cdot R_8 \nonumber \\
+  V_{IN(turn\text{-}off)} &= \SI{1.220}{\V}\cdot\frac{R_8+R_9}{R_9}
+\end{align}
+With $R_8 = \SI{365}{\kilo\ohm}$, $R_9 = \SI{56.2}{\kilo\ohm}$:
+\textbf{$\approx$\SI{10.2}{\V} on, $\approx$\SI{9.1}{\V} off} --- deliberately
+below the LTC4417's \SI{11}{\V} floor so the mux arbitrates first.
+
+\subsection{Soft-start and compensation}
+\begin{equation}
+  t_{SS} = \frac{\SI{1}{\V} \cdot C_9}{\SI{12.5}{\uA}}
+         = \frac{\SI{1}{\V} \cdot \SI{100}{\nF}}{\SI{12.5}{\uA}}
+         \approx \SI{8}{\ms}
+\end{equation}
+\comp{R10} = \SI{499}{\kilo\ohm} (SS$\rightarrow$VREF) selects \textbf{latch-off}
+on fault. Compensation \comp{R13} = \SI{15}{\kilo\ohm} + \comp{C25} =
+\SI{15}{\nF}; bench-tune with load steps at both outputs. Constraint:
+$C_9 \ge 5$--$10 \times C_{25}$ (ratio here: 6.7$\times$, OK).
+
+\subsection{Over-temperature latch}
+Trip point set by the NTC divider against the TL431's \SI{2.495}{\V} reference,
+fed from a \SI{5.1}{\V} zener rail so the trip point barely moves with battery
+voltage:
+\begin{equation}
+  R_{NTC}(trip) = R_{21}\left(\frac{V_Z}{2.495} - 1\right)
+                = 1.33\text{k}\left(\frac{5.1}{2.495}-1\right)
+                \approx \SI{1.39}{\kilo\ohm}
+\end{equation}
+$\Rightarrow$ trip $\approx$\SI{85}{\celsius} nominal, $\pm$\SI{8}{\celsius}
+realistic (zener tolerance, TL431 grade, NTC B-tolerance).
+\comp{TH1} (10\,k NTC) must be mounted on the hot copper, not in free air.
+Latch resets only when input power is cycled.
+
+\subsection{Indicator resistors}
+Continuous worst case is 36\,V input; sizes chosen so no resistor exceeds
+$\approx$50\,\% of its package rating:
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    \textbf{Ref} & \textbf{Value} & \textbf{Dissipation (worst case)} & \textbf{Package} \\
+    \midrule
+    \comp{R18} (green)   & \SI{4.7}{\kilo\ohm} & $\approx$\SI{0.10}{\W} & 1206 \\
+    \comp{R19} (red)     & \SI{6.8}{\kilo\ohm} & $\approx$\SI{0.17}{\W} & 1206 min., 2010 preferred \\
+    \comp{R29} (red)     & \SI{6.8}{\kilo\ohm} & $\approx$\SI{0.17}{\W} & 1206 min., 2010 preferred \\
+    \bottomrule
+  \end{tabular}
+  \caption{LED series resistors. \todo{re-check currents against final LED V\textsubscript{F} bins.}}
+\end{table}
+
+\subsection{Thermal analysis}
+\begin{itemize}[nosep]
+  \item \textbf{INTVCC self-heating} ($\approx$\SI{1.6}{\W} inside the IC at
+        36\,V, 200\,kHz, four $\approx$50\,nC gates):
+        \begin{equation}
+          P = V_{IN} \cdot I_{INTVCC} \approx 36 \cdot \SI{45}{\mA} \approx \SI{1.6}{\W},
+          \qquad T_J = T_A + P\,\theta_{JA}
+        \end{equation}
+        \todo{verify $\theta_{JA}$ for the chosen layout and confirm $T_J$ at max
+        ambient; fallback options: \SI{150}{\kHz}, lower-$Q_g$ FETs.}
+  \item \textbf{Bottom thermal pad:} \SI{45}{\mm}$\times$\SI{40}{\mm} exposed pad,
+        vias from \comp{U1} exposed pad and the power MOSFETs; contact with the
+        enclosure floor. \todo{add measured case temperature once available.}
+  \item \textbf{Heatsinks:} low-profile finned heatsinks on \comp{U1} and the
+        switching MOSFETs where height allows.
+\end{itemize}
+
+\subsection{Efficiency budget}
+\label{sec:efficiency}
+\todo{fill from bench measurement or a loss budget (conduction + switching +
+gate charge). One row per corner:}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}lcc@{}}
+    \toprule
+    \textbf{Corner} & \textbf{Input} & \textbf{Output} \\
+    \midrule
+    Buck, 36\,V $\rightarrow$ 12\,V, \SI{2}{\A}   & \todo{\%} & \todo{\%} \\
+    Buck-boost corner, 12\,V in, 12\,V out        & \todo{\%} & \todo{\%} \\
+    Boost, 11\,V $\rightarrow$ 24\,V, \SI{2}{\A}  & \todo{\%} & \todo{\%} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Efficiency at nominal duty.}
+\end{table}
+
+%=============================================================================
+\section{Verification \& Test Plan}
+%=============================================================================
+\todo{expand into a full procedure once the first board is built.}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}lX@{}}
+    \toprule
+    \textbf{Test} & \textbf{Pass criterion} \\
+    \midrule
+    Input priority          & Input~2 always selected when valid; clean fallback to Input~1 \\
+    UVLO per channel        & Both channels disable below \SI{11}{\V}, restart above it \\
+    Reverse polarity        & No damage / no output with either input reversed \\
+    Output voltage          & 12\,V and 24\,V within $\pm$1.5\,\% at nominal load \\
+    Output CC limit         & Current limit at $8.33\,\text{A} \pm \text{tolerance}$ \\
+    Load transient          & Stable at both outputs, no latch-off, acceptable deviation \\
+    Over-temp trip          & Latch fires at target temperature; recovers only on power cycle \\
+    Thermal soak            & $T_J$, case and enclosure-floor temperatures within limits at worst corner \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Verification test matrix.}
+\end{table}
+
+%=============================================================================
+\section{Open Items \& Risks}
+%=============================================================================
+See the risk register in \autoref{app:open}.
+
+%=============================================================================
+\appendix
+%=============================================================================
+
+\section{Bill of Materials}
+\label{app:bom}
+\todo{Keep in sync with \texttt{SchematicBOM.md}; summarize the main parts here.}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}llXl@{}}
+    \toprule
+    \textbf{Ref} & \textbf{Part / value} & \textbf{Purpose} & \textbf{Status} \\
+    \midrule
+    \comp{U1}   & LT8390 (TSSOP-28 EP)      & Buck-boost controller            & placed \\
+    \comp{Q3}--\comp{Q6} & NCEP40T11G       & Power switches                   & placed \\
+    \comp{L1}   & \SI{10}{\uH}, $\ge$\SI{18}{\A} sat & Main inductor             & placed \\
+    \comp{R5}   & \SI{2}{\m\ohm}            & Inductor current sense           & placed \\
+    \comp{R11}  & \SI{12}{\m\ohm}           & Output current sense             & placed \\
+    \comp{U3} + \comp{TH1} & TL431 + NTC   & Over-temp comparator / sensor    & \todo{verify} \\
+    \comp{Q7}--\comp{Q11}, \comp{D1}--\comp{D4}, \comp{J1} & \todo{parts} & Latch, LEDs, output select & to add \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Principal components (excerpt).}
+\end{table}
+
+\section{Equation Reference}
+\label{app:equations}
+Full derivations live in \autoref{sec:calcs}; this is a quick-reference index.
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}lXl@{}}
+    \toprule
+    \textbf{Quantity} & \textbf{Equation} & \textbf{Source} \\
+    \midrule
+    Inductor ripple (buck)   & $V_{OUT}(V_{IN(MAX)}-V_{OUT})/(f L V_{IN(MAX)})$   & LT8390 p.~18 \\
+    Inductor ripple (boost)  & $V_{IN(MIN)}(V_{OUT}-V_{IN(MIN)})/(f L V_{OUT})$   & LT8390 p.~18 \\
+    Peak current limit       & $I_{PEAK} = \SI{50}{\mV}/R_{SENSE}$                & LT8390 p.~18 \\
+    Output CC limit          & $I_{LIM} = \SI{100}{\mV}/R_{11}$ (CTRL high)       & LT8390 p.~22 \\
+    Output voltage           & $V_{OUT} = 1.00 \cdot (R_{top}+R_{bot})/R_{bot}$   & LT8390 p.~21 \\
+    UVLO                     & $V_{IN} = 1.233\,(R_8+R_9)/R_9 + 2.5\,\text{\textmu A}\,R_8$ & LT8390 p.~21 \\
+    Soft-start               & $t_{SS} = \SI{1}{\V} \cdot C_9/\SI{12.5}{\uA}$     & LT8390 p.~21 \\
+    NTC trip resistance      & $R_{NTC} = R_{21}(V_Z/2.495 - 1)$                  & TL431 datasheet \\
+    NCV/\todo           & \todo{}                                            & \todo{} \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Equation quick reference.}
+\end{table}
+
+\section{Design Decisions Log}
+\label{app:decisions}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}Xl@{}}
+    \toprule
+    \textbf{Decision} & \textbf{Date} \\
+    \midrule
+    LT8390 4-switch buck-boost: single inductor, input straddles both outputs, PGOOD + latch-off available. & 2026-09 \\
+    200\,kHz switching: thermal/size compromise; spread spectrum on. & 2026-09 \\
+    \SI{10}{\uH}/\SI{18}{\A}-sat inductor: height budget; accepted \SI{19}{\A} corner peak. & 2026-09 \\
+    Jumper presets instead of trim pot: no drift, no knob to bump, lower height. & 2026-09 \\
+    Latch pulls EN/UVLO: assured full shutdown; resets only on power cycle. & 2026-09 \\
+    Two red LEDs (fault vs.\ over-temp): distinguishable states, simpler than steered diode. & 2026-09 \\
+    \todo{append each new decision with rationale and date.} & \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Design decision record.}
+\end{table}
+
+\section{Open Items \& Risk Register}
+\label{app:open}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{\linewidth}{@{}Xll@{}}
+    \toprule
+    \textbf{Item} & \textbf{Severity} & \textbf{Status} \\
+    \midrule
+    Analog support blocks (\comp{Q7}--\comp{Q11}, \comp{D1}--\comp{D4}, \comp{J1}, \comp{TH1}) not yet placed & high & open \\
+    No footprints assigned on any symbol & high & open \\
+    Fuse ratings not finalized & medium & open \\
+    INTVCC self-heating ($\approx$\SI{1.6}{\W}) --- $T_J$ margin unverified & high & open \\
+    \SI{19}{\A} corner peak vs.\ \SI{18}{\A} inductor saturation & medium & accepted \\
+    40\,V FETs on 36\,V rail --- ringing headroom & medium & bench-check \\
+    Height budget: PCB + parts + heatsink under \SI{13.5}{\mm} & medium & open \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Open items carried from the current schematic audit.}
+\end{table}
+
+\section{Revision History}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}clll@{}}
+    \toprule
+    \textbf{Rev} & \textbf{Date} & \textbf{Author} & \textbf{Change} \\
+    \midrule
+    0.1 & \today & \todo{name} & Initial template created \\
+    \todo{} & \todo{} & \todo{} & \todo{} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Revision history.}
+\end{table}
+
+\section{References}
+\begin{enumerate}[label={[\arabic*]},nosep]
+  \item LT8390 datasheet, Rev.~F --- \texttt{Datasheets/LTC8390.pdf}
+  \item LTC4417 datasheet --- \texttt{Datasheets/LTC4417.pdf}
+  \item NCEP40T11G datasheet --- \texttt{Datasheets/NCEP40T11G.pdf}
+  \item TL431 datasheet --- \todo{download to \texttt{Datasheets/agentDownload/}}
+  \item Project specification --- \texttt{Specifications/SpecSheet.pdf}
+  \item \todo{add any further references as they are used.}
+\end{enumerate}
+
+\end{document}

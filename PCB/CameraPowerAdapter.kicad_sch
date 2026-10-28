@@ -644,6 +644,141 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Mechanical:Heatsink_Pad"
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "HS"
+				(at 0 5.715 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Heatsink_Pad"
+				(at 0 3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0.3048 -1.27 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0.3048 -1.27 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Heatsink with electrical connection, 1 pin"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "thermal heat temperature"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "Heatsink_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "Heatsink_Pad_0_1"
+				(polyline
+					(pts
+						(xy -0.3302 0) (xy -0.9652 0) (xy -0.9652 2.54) (xy -1.6002 2.54) (xy -1.6002 0) (xy -2.2352 0)
+						(xy -2.2352 2.54) (xy -2.8702 2.54) (xy -2.8702 -1.27) (xy -0.9652 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.3302 0) (xy -0.3302 2.54) (xy 0.3048 2.54) (xy 0.3048 0) (xy 0.9398 0) (xy 0.9398 2.54)
+						(xy 1.5748 2.54) (xy 1.5748 0) (xy 2.2098 0) (xy 2.2098 2.54) (xy 2.8448 2.54) (xy 2.8448 -1.27)
+						(xy -0.9652 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "Heatsink_Pad_1_1"
+				(pin passive line
+					(at 0 -2.54 90)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "easyeda2kicad:LT8390EFE#PBF"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -2355,6 +2490,16 @@
 	)
 	(wire
 		(pts
+			(xy 133.35 161.29) (xy 133.35 166.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c23afed-2faf-408d-b684-b856ecc63aba")
+	)
+	(wire
+		(pts
 			(xy 120.65 81.28) (xy 120.65 85.09)
 		)
 		(stroke
@@ -2812,6 +2957,16 @@
 			(type default)
 		)
 		(uuid "500f6589-c56a-4c7a-b1ca-4d74597fa1f2")
+	)
+	(wire
+		(pts
+			(xy 133.35 176.53) (xy 133.35 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "50e96cc9-7834-45df-80f7-235a2846784a")
 	)
 	(wire
 		(pts
@@ -4403,7 +4558,7 @@
 		)
 		(uuid "78ded39e-67a4-46eb-ab5a-319157f691de")
 	)
-	(label "VOUT"
+	(label "Vmux"
 		(at 97.79 177.8 0)
 		(effects
 			(font
@@ -4465,7 +4620,7 @@
 		)
 		(uuid "9d866616-abba-4879-818c-776a8651ba57")
 	)
-	(label "VOUT"
+	(label "Vmux"
 		(at 105.41 81.28 180)
 		(effects
 			(font
@@ -4535,7 +4690,7 @@
 		)
 		(uuid "b3aead37-6cc9-4ffd-8eaa-5dbf285745f8")
 	)
-	(label "VOUT"
+	(label "Vmux"
 		(at 133.35 113.03 180)
 		(effects
 			(font
@@ -4544,6 +4699,16 @@
 			(justify right bottom)
 		)
 		(uuid "cee5529c-2694-4b5e-9788-34f3da49fa09")
+	)
+	(label "SW1"
+		(at 133.35 180.34 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "da204051-6433-45b5-ae53-ee8f22b35340")
 	)
 	(label "SW2"
 		(at 227.33 40.64 180)
@@ -4574,6 +4739,16 @@
 			(justify right bottom)
 		)
 		(uuid "e03fa376-1c0d-4dbf-b60e-b1cc1254a151")
+	)
+	(label "SW2"
+		(at 133.35 166.37 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "e70697ae-1628-454b-a37c-228dc972b194")
 	)
 	(label "EN/UVLO"
 		(at 171.45 91.44 180)
@@ -4666,7 +4841,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 70.612 100.33 90)
 			(hide yes)
 			(show_name no)
@@ -4823,7 +4998,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 60.452 100.33 90)
 			(hide yes)
 			(show_name no)
@@ -5061,7 +5236,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 27.6352 106.68 0)
 			(hide yes)
 			(show_name no)
@@ -5140,7 +5315,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 254.762 68.58 90)
 			(hide yes)
 			(show_name no)
@@ -5221,7 +5396,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 221.945 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -5457,7 +5632,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 189.23 34.798 90)
 			(hide yes)
 			(show_name no)
@@ -5539,7 +5714,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Inductor_THT:Choke_EPCOS_B82722A"
 			(at 199.39 36.83 0)
 			(hide yes)
 			(show_name no)
@@ -5618,7 +5793,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 35.56 74.422 90)
 			(hide yes)
 			(show_name no)
@@ -5697,7 +5872,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 247.65 50.038 90)
 			(hide yes)
 			(show_name no)
@@ -5778,7 +5953,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 108.9152 92.71 0)
 			(hide yes)
 			(show_name no)
@@ -5859,7 +6034,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 262.585 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -5938,7 +6113,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 254.762 78.74 90)
 			(hide yes)
 			(show_name no)
@@ -6097,7 +6272,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 232.105 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -6178,7 +6353,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 252.425 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -6531,7 +6706,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 131.572 120.65 90)
 			(hide yes)
 			(show_name no)
@@ -6807,7 +6982,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 20.6248 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -6889,7 +7064,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 131.572 133.35 90)
 			(hide yes)
 			(show_name no)
@@ -6970,7 +7145,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 169.8752 48.26 0)
 			(hide yes)
 			(show_name no)
@@ -7207,7 +7382,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 185.42 38.405 0)
 			(hide yes)
 			(show_name no)
@@ -7366,7 +7541,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 134.3152 92.71 0)
 			(hide yes)
 			(show_name no)
@@ -7447,7 +7622,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 121.6152 92.71 0)
 			(hide yes)
 			(show_name no)
@@ -7527,7 +7702,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_SMD:D_0805_2012Metric"
 			(at 154.94 44.45 0)
 			(hide yes)
 			(show_name no)
@@ -7578,6 +7753,7 @@
 	(symbol
 		(lib_id "Device:C")
 		(at 237.49 53.34 0)
+		(mirror y)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -7587,7 +7763,7 @@
 		(dnp no)
 		(uuid "89cc1942-55a5-4863-b776-3c0807253d54")
 		(property "Reference" "C24"
-			(at 237.49 50.8 0)
+			(at 233.426 51.562 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7598,7 +7774,7 @@
 			)
 		)
 		(property "Value" "1u"
-			(at 237.49 55.88 0)
+			(at 233.68 53.848 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7608,8 +7784,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
-			(at 238.455 49.53 0)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 236.525 49.53 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7689,7 +7865,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 27.6352 72.39 0)
 			(hide yes)
 			(show_name no)
@@ -7768,7 +7944,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 254.762 54.61 90)
 			(hide yes)
 			(show_name no)
@@ -7849,7 +8025,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 92.405 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -8008,7 +8184,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 242.265 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -8087,7 +8263,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_SMD:D_0805_2012Metric"
 			(at 231.14 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -8168,7 +8344,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 46.6852 83.82 0)
 			(hide yes)
 			(show_name no)
@@ -8295,6 +8471,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Mechanical:Heatsink_Pad")
+		(at 133.35 158.75 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b099302d-15b1-42dc-b8d3-0562dacac806")
+		(property "Reference" "HS1"
+			(at 137.16 156.8449 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Heatsink_Pad"
+			(at 137.16 159.3849 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "easyeda2kicad:Heatsink_20x20x10_XSD271-294"
+			(at 133.6548 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 133.6548 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Heatsink with electrical connection, 1 pin"
+			(at 133.35 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "affc55e8-ed40-43e3-a23b-c00f92bf0c2f")
+		)
+		(instances
+			(project "CameraPowerAdapter"
+				(path "/c6ba3c8e-24a9-44a7-a5e1-e0df6887db4a"
+					(reference "HS1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 220.98 105.41 0)
 		(unit 1)
@@ -8327,7 +8582,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 221.945 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -8608,6 +8863,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Mechanical:Heatsink_Pad")
+		(at 133.35 173.99 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "bb9fe7a4-ed5e-461a-ab84-798ab1cc91ae")
+		(property "Reference" "HS2"
+			(at 137.16 172.0849 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Heatsink_Pad"
+			(at 137.16 174.6249 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "easyeda2kicad:Heatsink_20x20x10_XSD271-294"
+			(at 133.6548 175.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 133.6548 175.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Heatsink with electrical connection, 1 pin"
+			(at 133.35 173.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "53be41a2-0879-4a7a-a489-bcdf8f497efa")
+		)
+		(instances
+			(project "CameraPowerAdapter"
+				(path "/c6ba3c8e-24a9-44a7-a5e1-e0df6887db4a"
+					(reference "HS2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 91.44 48.26 0)
 		(unit 1)
@@ -8638,7 +8972,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 89.662 48.26 90)
 			(hide yes)
 			(show_name no)
@@ -8719,7 +9053,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 41.605 99.06 0)
 			(hide yes)
 			(show_name no)
@@ -8876,7 +9210,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 159.7152 91.44 0)
 			(hide yes)
 			(show_name no)
@@ -8957,7 +9291,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 147.0152 91.44 0)
 			(hide yes)
 			(show_name no)
@@ -9039,7 +9373,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 209.2452 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -9119,7 +9453,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 74.168 69.85 90)
 			(hide yes)
 			(show_name no)
